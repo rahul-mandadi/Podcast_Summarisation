@@ -71,6 +71,16 @@ Compared to baseline approaches found in literature, our LoRA method is more cos
 
 ## Conclusion
 By integrating Whisper-based transcription with LoRA-fine-tuned summarization models, we have developed a system capable of producing concise and coherent summaries of lengthy, complex content. Our approach demonstrates that parameter-efficient fine-tuning can strike a balance between accuracy and resource constraints, paving the way for scalable solutions to handle ever-growing audio libraries. Continued refinement in hyperparameter tuning, dataset selection, and domain adaptation can further enhance these results, ultimately making podcast summarization a more accessible and powerful tool.
+## Model Repository Links
+
+To ensure reproducibility and ease of access, we have hosted our fine-tuned models on Hugging Face. Below are the direct links to each model used in this project:
+
+| Model                 | Hugging Face Repository                                                                                           |
+|-----------------------|------------------------------------------------------------------------------------------------------------------|
+| **BART-Large (LoRA)** | [huggingface.co/rahulreddymandadi-northeastern-university/bart-large-lora](https://huggingface.co/ashwin0211/bart-large-cnn-repo) |
+| **BART-Base (LoRA)**  | [huggingface.co/rahulreddymandadi-northeastern-university/bart-base-lora](https://huggingface.co/RahulMandadi/lora_Bart_base_cnn)   |
+| **T5-Medium (LoRA)**  | [huggingface.co/rahulreddymandadi-northeastern-university/t5-medium-lora](https://huggingface.co/ashwin0211/lora_t5_medium)   |
+| **T5-Small (LoRA)**   | [huggingface.co/rahulreddymandadi-northeastern-university/t5-small-lora](https://huggingface.co/RahulMandadi/lora_T5_small)     |
 
 ## References
 - [Hugging Face Transformers](https://github.com/huggingface/transformers)
