@@ -2,61 +2,58 @@
 # Automated Podcast Content Summarization Using Parameter-Efficient Fine-Tuning and Speech Recognition
 
 ## Abstract
-This project explores a scalable and efficient pipeline for automatically transcribing and summarizing podcast content. Leveraging OpenAI’s Whisper model for speech-to-text conversion, we apply Parameter-Efficient Fine-Tuning (PEFT) methods such as LoRA to BART and T5 summarization models. Our goal is to achieve high-quality, concise summaries with reduced computational overhead. This approach aims to enhance accessibility, enable efficient content filtering, and assist users in quickly identifying relevant podcast episodes from large audio collections.
+This project explores the integration of speech recognition and parameter-efficient fine-tuning (PEFT) techniques to automatically summarize lengthy podcast episodes. By converting audio content into text using the Whisper model and subsequently applying LoRA-based fine-tuning to pre-trained transformer models (such as BART and T5), we aim to produce concise, coherent, and informative summaries. This approach balances computational efficiency with high-quality results, ultimately improving accessibility and enabling quick content filtering across large audio repositories.
 
 ## Overview
-Long-form audio content, such as podcasts, poses challenges for users who need to quickly glean key insights or determine relevance. Manual transcription and summarization are impractical at scale. This project proposes an automated solution that integrates accurate transcription and advanced summarization models. Starting with Whisper for transcription, we fine-tune pre-trained transformer-based summarizers (BART and T5 variants) using LoRA, a technique that updates a small subset of parameters. This method maintains model quality while reducing training resources and time.
+Podcasts are rich sources of information, but their long-form nature makes identifying relevant sections challenging. The need to quickly find key ideas in hours of spoken audio is critical for journalists, researchers, students, and anyone managing vast audio libraries. Our solution begins with Whisper for accurate transcription, followed by fine-tuning large language models using LoRA—a technique that updates only a small portion of model parameters. This parameter-efficient approach reduces training overhead while preserving model quality, making it more accessible for a range of use cases and computational environments.
 
-The following sections detail the problem, motivation, and societal impact before describing our chosen approaches, the rationale for these methods, and any related work. We then present a comprehensive experiment setup, including datasets, model architectures, training parameters, and computational environments. After discussing our main and supplementary results, we offer a critical discussion of performance trade-offs and potential improvements. The conclusion summarizes our achievements and provides references to relevant literature and tools.
+We benchmark our approach on a legislative document summarization dataset (Billsum) as a stand-in for complex, long-form content. While initially designed for textual data, Billsum’s complexity offers insights into how these techniques scale and generalize, suggesting that our workflow could handle domain adaptation for different types of content, including other spoken materials or specialized domains.
 
 ## What is the Problem?
-Manual summarization of podcast episodes is time-consuming and does not scale with the rapidly increasing volume of audio content. Listeners need a quick way to assess whether a podcast episode is relevant. Our problem is thus to automatically convert audio into text and then distill that text into a concise summary. This allows users to efficiently filter content, save time, and discover new material more easily.
+The problem lies in automatically extracting key insights from large volumes of spoken content. Manually summarizing podcasts is time-consuming, error-prone, and infeasible at scale. Users need a quick way to assess whether a given episode meets their interests or requirements, and traditional search tools and metadata often fall short. A robust automated summarizer can streamline content discovery, save time, and improve user engagement with audio platforms.
 
 ## Why is this Problem Interesting?
-As the popularity of podcasts soars, rapidly digesting and cataloging this content becomes essential. Automated summarization can significantly impact media monitoring, education, journalism, corporate communications, and accessibility for individuals with hearing impairments. By providing summaries, we help users navigate large collections of audio content, ultimately contributing to better information retrieval and democratized access to knowledge.
+As audio content proliferates—spanning news, educational lectures, entertainment, and research interviews—the ability to rapidly extract key points and summaries is invaluable. This capability is relevant not only to casual listeners but also to journalists, content curators, market researchers, educators, and accessibility advocates. By improving the efficiency of information retrieval and comprehension, this approach contributes to more inclusive access to knowledge and can assist in real-time decision-making scenarios.
 
 ## Proposed Approach
-Our approach integrates two main steps:
-1. **Transcription with Whisper**: We first leverage the Whisper model to generate accurate transcripts from podcast audio. Whisper’s robustness ensures high-quality textual input for subsequent summarization.
-2. **Summarization with LoRA-Fine-Tuned Models**: We fine-tune BART (Base and Large) and T5 (Medium and Small) models using LoRA, which updates a fraction of parameters. This reduces computational overhead and training complexity, making it feasible to experiment with multiple models and configurations efficiently.
+1. **Transcription with Whisper**: Convert audio segments into accurate transcripts. Whisper’s reliability in handling diverse accents and variable audio quality sets a strong foundation.
+2. **Summarization via LoRA-Fine-Tuned Models**: Apply LoRA-based PEFT to BART and T5 summarization models. This reduces the percentage of trainable parameters (~2-4%) while maintaining strong ROUGE scores. Parameter-efficient training allows experimentation with multiple architectures without excessive computation.
 
 ## Rationale Behind the Approach
-Traditional full fine-tuning of large language models is expensive and time-consuming. LoRA-based PEFT methods allow us to adapt powerful models at a fraction of the cost. While summarization of written text has been widely studied, applying these methods directly to automatically generated transcripts is less common. By combining speech recognition and PEFT-based summarization, we can deliver a more sustainable and scalable solution.
+Traditional full fine-tuning of large language models can be resource-intensive, both computationally and financially. LoRA provides a cost-effective alternative, enabling rapid adaptation of large pre-trained models to new tasks without retraining all parameters. While text summarization is well-studied, extending these techniques to spoken content (via transcripts) is less explored. By repurposing text-based datasets like Billsum, we can assess performance in summarizing complex, structured content similar in length and detail to podcast transcripts.
 
-Compared to previous approaches:
-- We rely on a state-of-the-art transcription model (Whisper).
-- We adopt a parameter-efficient fine-tuning strategy (LoRA) to handle large models without excessive computational demands.
-- We apply our approach to domain-specific text (e.g., legislative bills with Billsum) to assess performance and versatility.
+Comparisons with standard extractive or rule-based summarization methods underscore the benefits of generative, context-aware models. Earlier research often focused on news articles or short documents, whereas our approach targets longer, more varied transcripts—an area where advanced models can excel.
 
 ## Key Components & Results
-**Key Components:**
-- **Transcription**: Whisper for robust speech-to-text conversion.
-- **Summarization Models**: BART-Base, BART-Large, T5-Medium, and T5-Small, all fine-tuned using LoRA.
-- **Metrics**: ROUGE scores to quantify the quality of generated summaries; evaluation and training loss metrics to gauge model convergence and stability.
+**Key Components**:  
+- **Whisper** for transcription  
+- **BART (Base/Large) and T5 (Medium/Small) Models** fine-tuned with LoRA  
+- **Evaluation Metrics**: ROUGE scores, evaluation and training loss
 
-**Limitations:**
-- Whisper’s performance may degrade with poor audio quality or unusual accents.
-- Certain podcast topics may require domain-specific fine-tuning.
-- Some configurations yield shorter summaries that may omit essential details, indicating room for further fine-tuning and optimization.
+**Performance Highlights**:
+- BART-Large (LoRA) achieves the best ROUGE-1 (~0.5653), indicating high-quality summaries.
+- T5 and BART-Base variants show moderate performance but at lower computational costs.
+- Summaries remain coherent and contextually relevant, benefiting from Whisper’s quality transcripts and the rich latent knowledge in pre-trained models.
+
+**Limitations**:
+- Whisper accuracy may degrade with poor audio quality or highly domain-specific jargon.
+- Although parameter-efficient, some models still require significant GPU memory for large batches or longer sequences.
+- Domain adaptation can further improve results; current tests on Billsum simulate complexity but may not fully capture nuances of certain podcast genres.
 
 ## Experiment Setup
 **Dataset**:  
-- **Billsum**: A dataset of U.S. legislative bills used as a proxy for long-form text. Although not originally for podcasts, it helps simulate summarization of lengthy content segments. It contains thousands of samples, each with source text and target summaries, enabling quantitative evaluation with ROUGE metrics.
+- **Billsum**: A Hugging Face dataset of U.S. legislative bills with expert-written summaries. While not podcast-specific, it simulates long, complex textual input to test the summarization capabilities of our approach.
 
-**Implementation Details**:
-- **Models**: BART-Base, BART-Large, T5-Medium, T5-Small with LoRA-based fine-tuning.
-- **Parameters**: Typically around 2-4% of parameters updated via LoRA, significantly reducing training overhead.
-- **Environment**: Experiments run on GPU-enabled cloud instances. We use Hugging Face Transformers, PyTorch, and Weights & Biases (W&B) for logging and experiment tracking.
-
-**Model Architecture**:
-- **BART**: An encoder-decoder transformer pretrained on massive corpora, suitable for generative tasks like summarization.
-- **T5**: A text-to-text transformer that uniformly treats every NLP task.  
-- LoRA fine-tuning injects additional low-rank parameter matrices into the model, allowing adaptation without large-scale retraining.
+**Implementation Details**:  
+- **Hyperparameters**: Batch sizes adjusted for GPU memory (e.g., batch size=8), warm-up steps (~500), and weight decay (0.01).
+- **Training Environment**: Experiments conducted on GPU-enabled cloud instances with limited memory, guiding choice of gradient accumulation steps (e.g., 16) to fit sequences into memory efficiently.
+- **Model Architectures**:  
+  - **BART Variants**: Encoder-decoder transformers known for strong summarization capabilities.
+  - **T5 Variants**: Text-to-text framework enabling flexible summary generation.
+  - **LoRA Adaptation**: Injecting low-rank matrices into certain transformer layers reduces full-model retraining and expedites experimentation.
 
 ## Experiment Results
-### Main Results
-Below is a comparison of the main results for different models. ROUGE-1 and ROUGE-2 measure the overlap of unigrams and bigrams with the reference summaries, respectively, while ROUGE-L and ROUGE-Lsum consider longest common subsequences, offering a more nuanced measure of summary quality.
-
+**Main Results**:  
 | Model               | ROUGE-1  | ROUGE-2  | ROUGE-L  | ROUGE-Lsum | Eval Loss | Train Loss |
 |---------------------|----------|----------|----------|------------|-----------|------------|
 | **BART-Large (LoRA)**  | 0.5653   | 0.3477   | 0.4333   | 0.4641     | 1.4295    | 1.4806     |
@@ -64,16 +61,16 @@ Below is a comparison of the main results for different models. ROUGE-1 and ROUG
 | **T5-Medium (LoRA)**   | 0.2460   | 0.2021   | 0.2388   | 0.2389     | 1.2384    | 1.4548     |
 | **T5-Small (LoRA)**    | 0.2400   | 0.1904   | 0.2315   | 0.2315     | 1.6472    | 1.8503     |
 
-### Supplementary Results
-We experimented with different learning rates, batch sizes, and the proportion of parameters trained under LoRA. Fine-tuning a small percentage of parameters consistently reduced training costs while preserving model performance. Varying summary length (gen_len) and adjusting early stopping criteria also influenced the final ROUGE scores.
+**Supplementary Results**:  
+Adjusting learning rates, batch sizes, and epochs revealed that performance scales with training time and careful parameter tuning. Resource constraints (e.g., GPU memory) required smaller batch sizes and gradient accumulation. Slight improvements were noted with longer training and increased epochs, though diminishing returns highlight the importance of balanced hyperparameter choices.
 
 ## Discussion
-BART-Large fine-tuned with LoRA stands out as the top performer, but it comes with higher baseline resource requirements. Smaller models like T5-Small and BART-Base, while less accurate, may still be suitable for deployment on resource-limited devices. The trade-off between performance and efficiency is central to this project’s approach.
+Our results show that parameter-efficient fine-tuning can achieve competitive ROUGE scores while reducing computational demands. BART-Large emerges as the top contender, but smaller models like T5 or BART-Base may suffice in less resource-rich scenarios or where slightly lower accuracy is acceptable.
 
-In comparison to state-of-the-art full fine-tuning approaches, our LoRA-based method yields strong results at a fraction of the computational cost. If certain scores are not optimal, possible reasons include limited domain adaptation or the complexity of transcribed spoken language. Further efforts may involve domain-specific pre-training, improved audio quality, and advanced prompt engineering.
+Compared to baseline approaches found in literature, our LoRA method is more cost-effective and flexible. While the Billsum dataset approximates the complexity of podcast transcripts, future work could incorporate real-world podcast transcripts or domain-specific data. Enhanced domain adaptation, improved data preprocessing, and more sophisticated prompt engineering could further improve performance. Memory considerations remain a practical constraint, emphasizing the need for careful model and batch size selection.
 
 ## Conclusion
-We successfully integrated Whisper-based transcription with LoRA-fine-tuned summarization models to produce concise and coherent summaries of complex, long-form content. By striking a balance between computational efficiency and summarization quality, we have taken a step towards making large-scale podcast analysis accessible and user-friendly. Future work may explore more domain-adapted datasets, other speech modalities, and further parameter-efficient optimization techniques.
+By integrating Whisper-based transcription with LoRA-fine-tuned summarization models, we have developed a system capable of producing concise and coherent summaries of lengthy, complex content. Our approach demonstrates that parameter-efficient fine-tuning can strike a balance between accuracy and resource constraints, paving the way for scalable solutions to handle ever-growing audio libraries. Continued refinement in hyperparameter tuning, dataset selection, and domain adaptation can further enhance these results, ultimately making podcast summarization a more accessible and powerful tool.
 
 ## References
 - [Hugging Face Transformers](https://github.com/huggingface/transformers)
