@@ -71,16 +71,51 @@ Compared to baseline approaches found in literature, our LoRA method is more cos
 
 ## Conclusion
 By integrating Whisper-based transcription with LoRA-fine-tuned summarization models, we have developed a system capable of producing concise and coherent summaries of lengthy, complex content. Our approach demonstrates that parameter-efficient fine-tuning can strike a balance between accuracy and resource constraints, paving the way for scalable solutions to handle ever-growing audio libraries. Continued refinement in hyperparameter tuning, dataset selection, and domain adaptation can further enhance these results, ultimately making podcast summarization a more accessible and powerful tool.
+
 ## Model Repository Links
 
-To ensure reproducibility and ease of access, we have hosted our fine-tuned models on Hugging Face. Below are the direct links to each model used in this project:
+To ensure reproducibility and facilitate easy access, we have hosted our fine-tuned models on Hugging Face. Below are the direct links to each model used in this project:
 
-| Model                 | Hugging Face Repository                                                                                           |
-|-----------------------|------------------------------------------------------------------------------------------------------------------|
-| **BART-Large (LoRA)** | [huggingface.co/rahulreddymandadi-northeastern-university/bart-large-lora](https://huggingface.co/ashwin0211/bart-large-cnn-repo) |
-| **BART-Base (LoRA)**  | [huggingface.co/rahulreddymandadi-northeastern-university/bart-base-lora](https://huggingface.co/RahulMandadi/lora_Bart_base_cnn)   |
-| **T5-Medium (LoRA)**  | [huggingface.co/rahulreddymandadi-northeastern-university/t5-medium-lora](https://huggingface.co/ashwin0211/lora_t5_medium)   |
-| **T5-Small (LoRA)**   | [huggingface.co/rahulreddymandadi-northeastern-university/t5-small-lora](https://huggingface.co/RahulMandadi/lora_T5_small)     |
+| Model                 | Description                                           | Hugging Face Repository                                                                                           |
+|-----------------------|-------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| **BART-Large (LoRA)** | BART-Large model fine-tuned with LoRA for summarization | [ashwin0211/bart-large-cnn-repo](https://huggingface.co/ashwin0211/bart-large-cnn-repo) |
+| **BART-Base (LoRA)**  | BART-Base model fine-tuned with LoRA for summarization  | [RahulMandadi/lora_Bart_base_cnn](https://huggingface.co/RahulMandadi/lora_Bart_base_cnn)   |
+| **T5-Medium (LoRA)**  | T5-Medium model fine-tuned with LoRA for summarization  | [ashwin0211/lora_t5_medium](https://huggingface.co/ashwin0211/lora_t5_medium)               |
+| **T5-Small (LoRA)**   | T5-Small model fine-tuned with LoRA for summarization   | [RahulMandadi/lora_T5_small](https://huggingface.co/RahulMandadi/lora_T5_small)             |
+
+### How to Use the Models
+
+1. **Installation**:
+   Ensure you have the Hugging Face Transformers library installed. You can install it using pip:
+
+    ```bash
+    pip install transformers
+    ```
+
+2. **Loading a Model and Tokenizer**:
+   Here's an example of how to load the BART-Large (LoRA) model and its tokenizer:
+
+    ```python
+    from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+
+    model_name = "ashwin0211/bart-large-cnn-repo"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    ```
+
+3. **Generating Summaries**:
+   Use the loaded model to generate summaries from transcripts:
+
+    ```python
+    def generate_summary(text, model, tokenizer, max_length=150, min_length=40, do_sample=False):
+        inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
+        summary_ids = model.generate(inputs, max_length=max_length, min_length=min_length, length_penalty=2.0, num_beams=4, early_stopping=True)
+        return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+
+    transcript = "Your podcast transcript goes here..."
+    summary = generate_summary(transcript, model, tokenizer)
+    print(summary)
+    ```
 
 ## References
 - [Hugging Face Transformers](https://github.com/huggingface/transformers)
