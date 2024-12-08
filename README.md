@@ -40,6 +40,21 @@ Comparisons with standard extractive or rule-based summarization methods undersc
 - Although parameter-efficient, some models still require significant GPU memory for large batches or longer sequences.
 - Domain adaptation can further improve results; current tests on Billsum simulate complexity but may not fully capture nuances of certain podcast genres.
 
+### Handling Long Inputs
+
+Many of the models we use have a maximum input token length (typically 512 tokens), which can pose challenges when dealing with lengthy podcasts or transcripts that exceed this limit. To address this, we can employ several strategies to ensure our summarization process remains accurate and efficient:
+
+1. **Chunking and Batching**:  
+   We split lengthy transcripts into smaller, manageable segments (e.g., 512-token chunks). Each chunk is summarized independently, and these partial summaries are then combined or further summarized to produce a coherent final summary. This approach ensures that we stay within the model’s token constraints.
+
+2. **Sliding Window Approach**:  
+   By using a sliding window, we maintain a certain overlap between consecutive chunks. This overlap preserves contextual continuity, ensuring that information from one segment isn’t lost when moving on to the next. The final summary can integrate insights from each windowed segment, producing a more comprehensive result.
+
+3. **Extractive Summaries as Preprocessing**:  
+   Before applying our generative summarization models, we may first generate a quick extractive summary using a simpler model or keyword extraction technique. This extractive summary serves as a shorter, distilled input, which the PEFT-fine-tuned model can then transform into a higher-quality abstractive summary. This two-step process allows the model to work within token limits while still capturing essential content.
+
+By employing these techniques, we can ensure that even the longest podcast transcripts can be efficiently processed. As a result, users receive concise, coherent, and contextually rich summaries, regardless of the original audio’s length.
+
 ## Experiment Setup
 **Dataset**:  
 - **Billsum**: A Hugging Face dataset of U.S. legislative bills with expert-written summaries. While not podcast-specific, it simulates long, complex textual input to test the summarization capabilities of our approach.
@@ -118,8 +133,12 @@ To ensure reproducibility and facilitate easy access, we have hosted our fine-tu
     ```
 
 ## References
+
+- [Hugging Face Transformers Documentation: Summarization Task](https://huggingface.co/docs/transformers/main/en/tasks/summarization)
 - [Hugging Face Transformers](https://github.com/huggingface/transformers)
 - [Hugging Face Billsum Dataset](https://huggingface.co/datasets/billsum)
 - [OpenAI Whisper](https://github.com/openai/whisper)
 - [LoRA: Low-Rank Adaptation of Large Language Models (Hu et al.)](https://arxiv.org/abs/2106.09685)
 - [Weights & Biases](https://wandb.ai)
+- [BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension](https://arxiv.org/abs/1910.13461)
+- [T5: Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer](https://arxiv.org/abs/1910.10683)
