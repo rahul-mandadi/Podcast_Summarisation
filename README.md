@@ -1,5 +1,6 @@
 # Podcast_Summarisation
 # Automated Podcast Content Summarization Using Parameter-Efficient Fine-Tuning and Speech Recognition
+By Rahul Reddy Mandadi and Ashwin Khairnar
 
 ## Abstract
 This project explores the integration of speech recognition and parameter-efficient fine-tuning (PEFT) techniques to automatically summarize lengthy podcast episodes. By converting audio content into text using the Whisper model and subsequently applying LoRA-based fine-tuning to pre-trained transformer models (such as BART and T5), we aim to produce concise, coherent, and informative summaries. This approach balances computational efficiency with high-quality results, ultimately improving accessibility and enabling quick content filtering across large audio repositories.
